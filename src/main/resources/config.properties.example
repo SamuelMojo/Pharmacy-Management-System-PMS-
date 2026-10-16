@@ -1,0 +1,3 @@
+  db.url=jdbc:postgresql://localhost:5432/pms
+   db.user=pms
+   db.password=change_me
