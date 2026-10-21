@@ -1,2 +1,26 @@
+# Local PostgreSQL for development.
+#   Start it:  docker compose up -d
+#   Stop it:   docker compose down        (your data stays in the pgdata volume)
+#   Wipe it:   docker compose down -v     (deletes all data)
+# Settings come from your .env file (copy .env.example to .env first).
 services:
-  
+  db:
+    image: postgres:16
+    container_name: pms-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-pms}
+      POSTGRES_USER: ${DB_USER:-pms}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-pms} -d ${DB_NAME:-pms}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:
