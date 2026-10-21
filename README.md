@@ -48,21 +48,34 @@ Activate the virtual environment in every new terminal. Your prompt should start
 python -m pms.main
 ```
 
-A window titled "Pharmacy Management System" should open.
+A login window opens. Log in as `admin` (see Database above).
 
 ## Run the tests
 
 ```
+docker compose up -d
 pytest
 ```
 
-## Database (coming soon)
+Tests that use the database run against a separate database called `pms_test`, never your real data. If PostgreSQL is not running those tests are skipped.
 
-Copy `.env.example` to `.env` and fill in your values. `.env` is ignored by Git, so never commit it.
+How the foundation works, and how to add your own screens, tables and permissions: see `docs/foundation-guide.md`.
+
+## Database
+
+The database is PostgreSQL, run in Docker. Docker Desktop must be open.
 
 ```
+cp .env.example .env          # Windows: copy .env.example .env
 docker compose up -d
+python -m pms.migrate --seed
 ```
+
+`.env` is ignored by Git, so never commit it. `python -m pms.migrate` builds the tables from the numbered files in `migrations/` (safe to run again; it only applies new files). `--seed` adds one demo user per role.
+
+Demo logins (password `Pharmacy2026` for all): `admin`, `pharmacist`, `stock`, `finance`, `counter`.
+
+After a `git pull` that adds a new file to `migrations/`, run `python -m pms.migrate` again.
 
 ## Project structure
 
